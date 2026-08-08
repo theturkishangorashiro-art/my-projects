@@ -289,6 +289,25 @@ class PortfolioApp {
         this.renderProjects(result);
     }
 
+    getProjectIcon(name, language) {
+        const n = (name || '').toLowerCase();
+        if (n.includes('pet')) return '🐾';
+        if (n.includes('diagram')) return '📊';
+        if (n.includes('terminal')) return '💻';
+        if (n.includes('apply')) return '🎯';
+        if (n.includes('patch') || n.includes('monitor')) return '🛡️';
+        if (n.includes('card')) return '💌';
+        if (n.includes('my-projects')) return '🌐';
+        if (n.includes('project')) return '📦';
+
+        const l = (language || '').toLowerCase();
+        if (l === 'typescript' || l === 'javascript') return '⚡';
+        if (l === 'python') return '🐍';
+        if (l === 'rust') return '🦀';
+        if (l === 'go') return '🐹';
+        return '📁';
+    }
+
     renderProjects(repos) {
         const container = document.getElementById('projectsContainer');
         const countEl = document.getElementById('projectsCount');
@@ -309,17 +328,19 @@ class PortfolioApp {
             return;
         }
 
-        container.innerHTML = repos.map((repo, idx) => `
+        container.innerHTML = repos.map((repo, idx) => {
+            const icon = repo.icon || this.getProjectIcon(repo.name, repo.language);
+            return `
             <div class="project-card glass-panel" style="animation-delay: ${idx * 0.05}s">
                 <div class="project-card-header">
-                    <div class="folder-icon">📁</div>
+                    <div class="folder-icon" title="${this.escapeHtml(repo.name)}">${icon}</div>
                     <div class="project-links">
                         ${repo.homepage ? `<a href="${repo.homepage}" target="_blank" rel="noopener" title="Live Preview" class="icon-link">🌐</a>` : ''}
                         <a href="${repo.html_url}" target="_blank" rel="noopener" title="View Repository" class="icon-link">📦</a>
                     </div>
                 </div>
                 
-                <h3 class="project-title" onclick="window.portfolioApp.openModal(${repo.id})">${this.escapeHtml(repo.name)}</h3>
+                <h3 class="project-title" onclick="window.portfolioApp.openModal('${this.escapeHtml(repo.name)}')">${this.escapeHtml(repo.name)}</h3>
                 <p class="project-description">${this.escapeHtml(repo.description)}</p>
 
                 <div class="project-topics">
@@ -332,24 +353,26 @@ class PortfolioApp {
                         <span class="meta-item">⭐ ${repo.stargazers_count}</span>
                         <span class="meta-item">🍴 ${repo.forks_count}</span>
                     </div>
-                    <button class="btn-inspect" onclick="window.portfolioApp.openModal(${repo.id})">Details →</button>
+                    <button class="btn-inspect" onclick="window.portfolioApp.openModal('${this.escapeHtml(repo.name)}')">Details →</button>
                 </div>
             </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
-    openModal(repoId) {
-        const repo = this.repos.find(r => r.id === repoId) || 
-                     window.PORTFOLIO_CONFIG.featuredProjects.find(r => r.id === repoId || r.name === repoId);
+    openModal(repoIdentifier) {
+        const repo = this.repos.find(r => r.id === repoIdentifier || r.name === repoIdentifier) || 
+                     window.PORTFOLIO_CONFIG.featuredProjects.find(r => r.name === repoIdentifier || r.id === repoIdentifier);
 
         if (!repo) return;
 
         const modal = document.getElementById('projectModal');
         const modalBody = document.getElementById('modalBody');
+        const icon = repo.icon || this.getProjectIcon(repo.name, repo.language);
 
         modalBody.innerHTML = `
             <div class="modal-project-header">
-                <h2>${this.escapeHtml(repo.name)}</h2>
+                <h2 style="display: flex; align-items: center; gap: 0.75rem;"><span style="font-size: 2rem;">${icon}</span> ${this.escapeHtml(repo.name)}</h2>
                 <div class="modal-tags">
                     <span class="lang-badge" style="background-color: ${this.getLanguageColor(repo.language)}22; color: ${this.getLanguageColor(repo.language)}; border: 1px solid ${this.getLanguageColor(repo.language)}44">
                         ${repo.language}

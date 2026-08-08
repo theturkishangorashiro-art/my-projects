@@ -27,6 +27,7 @@ window.PORTFOLIO_CONFIG = {
     featuredProjects: [
         {
             name: "Apply-and-Pray",
+            icon: "🎯",
             description: "Open-source LinkedIn job application assistant that automates job search, Easy Apply submissions, application tracking, and candidate workflow management.",
             html_url: "https://github.com/theturkishangorashiro-art/Apply-and-Pray",
             homepage: "",
@@ -40,6 +41,7 @@ window.PORTFOLIO_CONFIG = {
         },
         {
             name: "Desktop_pet",
+            icon: "🐾",
             description: "Lightweight virtual desktop companion featuring custom pixel animations, physics interactions, and integrated Pomodoro productivity reminders.",
             html_url: "https://github.com/theturkishangorashiro-art/Desktop_pet",
             homepage: "",
@@ -53,6 +55,7 @@ window.PORTFOLIO_CONFIG = {
         },
         {
             name: "code-to-diagram",
+            icon: "📊",
             description: "Automated codebase parser that turns source repositories into interactive dependency graphs, AST visualizations, and Mermaid architectural diagrams.",
             html_url: "https://github.com/theturkishangorashiro-art/code-to-diagram",
             homepage: "",
@@ -66,6 +69,7 @@ window.PORTFOLIO_CONFIG = {
         },
         {
             name: "terminal-api-client",
+            icon: "💻",
             description: "Keyboard-driven terminal API client and TUI inspector for REST & GraphQL endpoints with built-in latency benchmarking.",
             html_url: "https://github.com/theturkishangorashiro-art/terminal-api-client",
             homepage: "",
@@ -79,6 +83,7 @@ window.PORTFOLIO_CONFIG = {
         },
         {
             name: "windows-patch-monitor-agent",
+            icon: "🛡️",
             description: "Automated bot and web dashboard tracking Windows Patch Tuesday releases, vulnerability advisories, and community feedback in real time.",
             html_url: "https://github.com/theturkishangorashiro-art/windows-patch-monitor-agent",
             homepage: "",
@@ -92,6 +97,7 @@ window.PORTFOLIO_CONFIG = {
         },
         {
             name: "E-Card-Generator",
+            icon: "💌",
             description: "Flask-based web application allowing users to request, generate, customize, and verify digital greeting cards with custom templates and signatures.",
             html_url: "https://github.com/theturkishangorashiro-art/E-Card-Generator",
             homepage: "",
@@ -105,6 +111,7 @@ window.PORTFOLIO_CONFIG = {
         },
         {
             name: "my-projects",
+            icon: "🌐",
             description: "Interactive GitHub Projects Portfolio website featuring glassmorphism UI, real-time repository stats, terminal overlay, and project showcases.",
             html_url: "https://github.com/theturkishangorashiro-art/my-projects",
             homepage: "https://theturkishangorashiro-art.github.io/my-projects/",
@@ -118,6 +125,7 @@ window.PORTFOLIO_CONFIG = {
         },
         {
             name: "projects",
+            icon: "📦",
             description: "Central repository for experimental prototypes, open-source utilities, algorithm benchmarks, and code snippets.",
             html_url: "https://github.com/theturkishangorashiro-art/projects",
             homepage: "",
