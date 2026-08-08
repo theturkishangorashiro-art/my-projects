@@ -115,10 +115,21 @@ class GitHubService {
 
             // Merge featured config projects into API results
             const mergedMap = new Map();
-            featuredConfig.forEach(p => mergedMap.set(p.name.toLowerCase(), p));
+            featuredConfig.forEach(p => mergedMap.set(p.name.toLowerCase(), { ...p }));
             formattedRepos.forEach(repo => {
                 const key = repo.name.toLowerCase();
-                if (!mergedMap.has(key)) {
+                if (mergedMap.has(key)) {
+                    const existing = mergedMap.get(key);
+                    mergedMap.set(key, {
+                        ...existing,
+                        stargazers_count: repo.stargazers_count !== undefined ? repo.stargazers_count : existing.stargazers_count,
+                        forks_count: repo.forks_count !== undefined ? repo.forks_count : existing.forks_count,
+                        updated_at: repo.updated_at || existing.updated_at,
+                        html_url: existing.html_url || repo.html_url,
+                        description: existing.description || repo.description,
+                        topics: (existing.topics && existing.topics.length > 0) ? existing.topics : (repo.topics || [])
+                    });
+                } else {
                     mergedMap.set(key, repo);
                 }
             });
