@@ -6,18 +6,15 @@
 
 class GitHubService {
     constructor() {
-        this.cacheKeyPrefix = "gh_portfolio_cache_";
-        this.cacheTTL = 15 * 60 * 1000; // 15 minutes cache
+        this.cacheKeyPrefix = "gh_portfolio_cache_v2_";
         this.clearCache();
     }
 
     clearCache() {
         try {
-            Object.keys(localStorage).forEach(key => {
-                if (key.startsWith(this.cacheKeyPrefix)) {
-                    localStorage.removeItem(key);
-                }
-            });
+            if (window.localStorage) {
+                localStorage.clear();
+            }
         } catch (e) {}
     }
 
@@ -25,15 +22,6 @@ class GitHubService {
      * Fetch user profile metadata
      */
     async getUserProfile(username) {
-        const cacheKey = `${this.cacheKeyPrefix}user_${username}`;
-        const cached = this.getFromCache(cacheKey);
-        if (cached) {
-            if (window.PORTFOLIO_CONFIG && window.PORTFOLIO_CONFIG.profile.bio) {
-                cached.bio = window.PORTFOLIO_CONFIG.profile.bio;
-            }
-            return cached;
-        }
-
         try {
             const response = await fetch(`https://api.github.com/users/${encodeURIComponent(username)}`);
             if (!response.ok) {
@@ -43,7 +31,6 @@ class GitHubService {
             if (window.PORTFOLIO_CONFIG && window.PORTFOLIO_CONFIG.profile.bio) {
                 data.bio = window.PORTFOLIO_CONFIG.profile.bio;
             }
-            this.setCache(cacheKey, data);
             return data;
         } catch (error) {
             console.warn("Using profile fallback due to API limit or network error:", error.message);
@@ -54,7 +41,7 @@ class GitHubService {
                 bio: fallback.bio,
                 location: fallback.location,
                 avatar_url: fallback.avatarFallback,
-                public_repos: 12,
+                public_repos: 8,
                 followers: 240,
                 following: 45,
                 html_url: `https://github.com/${username}`
@@ -66,36 +53,8 @@ class GitHubService {
      * Fetch user repositories sorted by updated date or stargazers
      */
     async getUserRepos(username) {
-        const cacheKey = `${this.cacheKeyPrefix}repos_${username}`;
-        const cached = this.getFromCache(cacheKey);
-        
-        const featuredConfig = window.PORTFOLIO_CONFIG.featuredProjects || [];
-
-        if (cached) {
-            const normalizeKey = str => str ? str.toLowerCase().replace(/[-_]/g, '') : '';
-            const mergedMap = new Map();
-            featuredConfig.forEach(p => mergedMap.set(normalizeKey(p.name), { ...p }));
-            cached.forEach(repo => {
-                const key = normalizeKey(repo.name);
-                if (mergedMap.has(key)) {
-                    const existing = mergedMap.get(key);
-                    mergedMap.set(key, {
-                        ...existing,
-                        name: repo.name || existing.name,
-                        stargazers_count: repo.stargazers_count !== undefined ? repo.stargazers_count : existing.stargazers_count,
-                        forks_count: repo.forks_count !== undefined ? repo.forks_count : existing.forks_count,
-                        updated_at: repo.updated_at || existing.updated_at,
-                        html_url: repo.html_url || existing.html_url,
-                        description: (existing.description && existing.description.length > 5) ? existing.description : (repo.description || "No description provided for this repository."),
-                        topics: (existing.topics && existing.topics.length > 0) ? existing.topics : (repo.topics || []),
-                        readme: existing.readme || repo.readme || ""
-                    });
-                } else {
-                    mergedMap.set(key, repo);
-                }
-            });
-            return Array.from(mergedMap.values());
-        }
+        const featuredConfig = (window.PORTFOLIO_CONFIG && window.PORTFOLIO_CONFIG.featuredProjects) ? window.PORTFOLIO_CONFIG.featuredProjects : [];
+        const normalizeKey = str => str ? str.toLowerCase().replace(/[-_]/g, '') : '';
 
         try {
             const response = await fetch(
@@ -106,32 +65,33 @@ class GitHubService {
             }
             const repos = await response.json();
             
-            // Format and sanitize repo objects
+            // Format and sanitize repo objects from API
             const formattedRepos = repos
-                .filter(repo => !repo.fork) // Filter out forks unless needed
+                .filter(repo => !repo.fork)
                 .map(repo => ({
                     id: repo.id,
                     name: repo.name,
-                    description: repo.description || "No description provided for this repository.",
+                    description: repo.description || "",
                     html_url: repo.html_url,
                     homepage: repo.homepage || "",
-                    stargazers_count: repo.stargazers_count,
-                    forks_count: repo.forks_count,
-                    open_issues_count: repo.open_issues_count,
+                    stargazers_count: repo.stargazers_count || 0,
+                    forks_count: repo.forks_count || 0,
+                    open_issues_count: repo.open_issues_count || 0,
                     language: repo.language || "Plain Text",
                     topics: repo.topics || [],
                     updated_at: repo.updated_at,
                     pushed_at: repo.pushed_at,
                     license: repo.license ? repo.license.spdx_id : null,
-                    featured: repo.stargazers_count > 5 || repo.topics?.includes("featured")
+                    featured: true
                 }));
 
-            // Merge featured config projects into API results
-            const normalizeKey = str => str ? str.toLowerCase().replace(/[-_]/g, '') : '';
+            // Build map of curated featured projects
             const mergedMap = new Map();
-            
-            featuredConfig.forEach(p => mergedMap.set(normalizeKey(p.name), { ...p }));
-            
+            featuredConfig.forEach(p => {
+                mergedMap.set(normalizeKey(p.name), { ...p });
+            });
+
+            // Merge API repos with featured projects
             formattedRepos.forEach(repo => {
                 const key = normalizeKey(repo.name);
                 if (mergedMap.has(key)) {
@@ -152,13 +112,10 @@ class GitHubService {
                 }
             });
 
-            const finalRepos = Array.from(mergedMap.values());
-
-            this.setCache(cacheKey, finalRepos);
-            return finalRepos;
+            return Array.from(mergedMap.values());
         } catch (error) {
             console.warn("Using repository showcase fallbacks due to API rate limit or error:", error.message);
-            return window.PORTFOLIO_CONFIG.featuredProjects;
+            return featuredConfig;
         }
     }
 
@@ -193,33 +150,6 @@ class GitHubService {
             totalForks,
             topLanguages
         };
-    }
-
-    getFromCache(key) {
-        try {
-            const itemStr = localStorage.getItem(key);
-            if (!itemStr) return null;
-            const item = JSON.parse(itemStr);
-            if (Date.now() > item.expiry) {
-                localStorage.removeItem(key);
-                return null;
-            }
-            return item.value;
-        } catch (e) {
-            return null;
-        }
-    }
-
-    setCache(key, value) {
-        try {
-            const item = {
-                value: value,
-                expiry: Date.now() + this.cacheTTL
-            };
-            localStorage.setItem(key, JSON.stringify(item));
-        } catch (e) {
-            // localStorage full or disabled
-        }
     }
 }
 
