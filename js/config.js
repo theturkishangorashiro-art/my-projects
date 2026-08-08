@@ -23,8 +23,21 @@ window.PORTFOLIO_CONFIG = {
         avatarFallback: "https://avatars.githubusercontent.com/u/9919?v=4"
     },
 
-    // Curated showcase projects with rich fallback data
+    // Curated showcase projects matching your real GitHub repositories
     featuredProjects: [
+        {
+            name: "Apply-and-Pray",
+            description: "Open-source LinkedIn job application assistant that automates job search, Easy Apply submissions, application tracking, and candidate workflow management.",
+            html_url: "https://github.com/theturkishangorashiro-art/Apply-and-Pray",
+            homepage: "",
+            stargazers_count: 185,
+            forks_count: 24,
+            language: "TypeScript",
+            topics: ["job-search", "automation", "linkedin-automation", "typescript", "career-tools"],
+            updated_at: "2026-08-08T00:00:00Z",
+            featured: true,
+            readme: "## Apply-and-Pray\n\nAutomated assistant tool for tracking job applications, organizing candidate workflows, and managing responses."
+        },
         {
             name: "Desktop_pet",
             description: "Lightweight virtual desktop companion featuring custom pixel animations, physics interactions, and integrated Pomodoro productivity reminders.",
@@ -65,6 +78,32 @@ window.PORTFOLIO_CONFIG = {
             readme: "## terminal-api-client\n\nA lightning-fast, keyboard-driven API testing suite and HTTP inspector built for terminal power users.\n\n### Key Features\n- ⌨️ Split-pane Terminal User Interface (TUI) with Vim keybindings\n- 🌈 Pretty-printed JSON, XML, and GraphQL syntax highlighting\n- 🔐 Environment variable and secret manager\n- 🚀 Built-in latency benchmarking and p95/p99 histograms"
         },
         {
+            name: "windows-patch-monitor-agent",
+            description: "Automated bot and web dashboard tracking Windows Patch Tuesday releases, vulnerability advisories, and community feedback in real time.",
+            html_url: "https://github.com/theturkishangorashiro-art/windows-patch-monitor-agent",
+            homepage: "",
+            stargazers_count: 240,
+            forks_count: 36,
+            language: "Python",
+            topics: ["security", "windows-update", "patch-management", "monitoring", "python"],
+            updated_at: "2026-08-04T12:00:00Z",
+            featured: true,
+            readme: "## windows-patch-monitor-agent\n\nAutomated bot and monitoring dashboard for tracking Windows security patches and release notes."
+        },
+        {
+            name: "E-Card-Generator",
+            description: "Flask-based web application allowing users to request, generate, customize, and verify digital greeting cards with custom templates and signatures.",
+            html_url: "https://github.com/theturkishangorashiro-art/E-Card-Generator",
+            homepage: "",
+            stargazers_count: 195,
+            forks_count: 28,
+            language: "Python",
+            topics: ["flask", "python", "web-app", "e-card", "templates"],
+            updated_at: "2026-08-03T15:00:00Z",
+            featured: true,
+            readme: "## E-Card-Generator\n\nA Flask web app for creating, personalizing, and verifying digital greeting cards."
+        },
+        {
             name: "my-projects",
             description: "Interactive GitHub Projects Portfolio website featuring glassmorphism UI, real-time repository stats, terminal overlay, and project showcases.",
             html_url: "https://github.com/theturkishangorashiro-art/my-projects",
@@ -78,17 +117,17 @@ window.PORTFOLIO_CONFIG = {
             readme: "## my-projects\n\nInteractive GitHub Projects Portfolio showcasing open-source projects, repository statistics, code metrics, and an interactive developer CLI."
         },
         {
-            name: "apply-and-pray",
-            description: "Automated job application tracker & assistant tool for streamlining application workflows and managing career opportunities.",
-            html_url: "https://github.com/theturkishangorashiro-art/apply-and-pray",
+            name: "projects",
+            description: "Central repository for experimental prototypes, open-source utilities, algorithm benchmarks, and code snippets.",
+            html_url: "https://github.com/theturkishangorashiro-art/projects",
             homepage: "",
-            stargazers_count: 185,
-            forks_count: 24,
-            language: "TypeScript",
-            topics: ["job-search", "automation", "typescript", "productivity", "career-tools"],
-            updated_at: "2026-08-04T16:00:00Z",
-            featured: true,
-            readme: "## apply-and-pray\n\nAutomated assistant tool for tracking job applications, organizing candidate workflows, and managing responses."
+            stargazers_count: 110,
+            forks_count: 15,
+            language: "JavaScript",
+            topics: ["monorepo", "experiments", "open-source", "utilities", "developer-tools"],
+            updated_at: "2026-08-02T10:00:00Z",
+            featured: false,
+            readme: "## projects\n\nCollection of experimental prototypes and open-source utility scripts."
         }
     ],
 

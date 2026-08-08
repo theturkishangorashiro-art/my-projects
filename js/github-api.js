@@ -72,12 +72,25 @@ class GitHubService {
         const featuredConfig = window.PORTFOLIO_CONFIG.featuredProjects || [];
 
         if (cached) {
-            // Ensure featured projects are present in cached list
+            const normalizeKey = str => str ? str.toLowerCase().replace(/[-_]/g, '') : '';
             const mergedMap = new Map();
-            featuredConfig.forEach(p => mergedMap.set(p.name.toLowerCase(), p));
+            featuredConfig.forEach(p => mergedMap.set(normalizeKey(p.name), { ...p }));
             cached.forEach(repo => {
-                const key = repo.name.toLowerCase();
-                if (!mergedMap.has(key)) {
+                const key = normalizeKey(repo.name);
+                if (mergedMap.has(key)) {
+                    const existing = mergedMap.get(key);
+                    mergedMap.set(key, {
+                        ...existing,
+                        name: repo.name || existing.name,
+                        stargazers_count: repo.stargazers_count !== undefined ? repo.stargazers_count : existing.stargazers_count,
+                        forks_count: repo.forks_count !== undefined ? repo.forks_count : existing.forks_count,
+                        updated_at: repo.updated_at || existing.updated_at,
+                        html_url: repo.html_url || existing.html_url,
+                        description: (existing.description && existing.description.length > 5) ? existing.description : (repo.description || "No description provided for this repository."),
+                        topics: (existing.topics && existing.topics.length > 0) ? existing.topics : (repo.topics || []),
+                        readme: existing.readme || repo.readme || ""
+                    });
+                } else {
                     mergedMap.set(key, repo);
                 }
             });
@@ -114,20 +127,25 @@ class GitHubService {
                 }));
 
             // Merge featured config projects into API results
+            const normalizeKey = str => str ? str.toLowerCase().replace(/[-_]/g, '') : '';
             const mergedMap = new Map();
-            featuredConfig.forEach(p => mergedMap.set(p.name.toLowerCase(), { ...p }));
+            
+            featuredConfig.forEach(p => mergedMap.set(normalizeKey(p.name), { ...p }));
+            
             formattedRepos.forEach(repo => {
-                const key = repo.name.toLowerCase();
+                const key = normalizeKey(repo.name);
                 if (mergedMap.has(key)) {
                     const existing = mergedMap.get(key);
                     mergedMap.set(key, {
                         ...existing,
+                        name: repo.name || existing.name,
                         stargazers_count: repo.stargazers_count !== undefined ? repo.stargazers_count : existing.stargazers_count,
                         forks_count: repo.forks_count !== undefined ? repo.forks_count : existing.forks_count,
                         updated_at: repo.updated_at || existing.updated_at,
-                        html_url: existing.html_url || repo.html_url,
-                        description: existing.description || repo.description,
-                        topics: (existing.topics && existing.topics.length > 0) ? existing.topics : (repo.topics || [])
+                        html_url: repo.html_url || existing.html_url,
+                        description: (existing.description && existing.description.length > 5) ? existing.description : (repo.description || "No description provided for this repository."),
+                        topics: (existing.topics && existing.topics.length > 0) ? existing.topics : (repo.topics || []),
+                        readme: existing.readme || repo.readme || ""
                     });
                 } else {
                     mergedMap.set(key, repo);
