@@ -54,18 +54,27 @@
             <h1 id="userName" class="hero-title">Developer Portfolio</h1>
             <div id="userHandle" class="hero-subtitle">@github-user</div>
             <p id="userBio" class="hero-bio">
-                Building open-source software, scalable web applications, and developer tooling.
+                Turning coffee and AI prompts into working apps before my context window runs out. ☕✨ Building full-stack web apps, solving real-world challenges, and always open to learn, collaborate, or build new projects!
             </p>
 
             <div class="hero-actions">
                 <a href="#projectsSection" class="btn btn-primary">
                     <span>🚀 Explore Projects</span>
                 </a>
-                <a id="userGithubLink" href="https://github.com" target="_blank" rel="noopener" class="btn btn-outline">
-                    <span>📦 GitHub Profile</span>
+                <a id="userGithubLink" href="https://github.com/theturkishangorashiro-art/apply-and-pray" target="_blank" rel="noopener" class="btn btn-outline">
+                    <span>📦 GitHub</span>
                 </a>
+                <a id="userLinkedinLink" href="https://www.linkedin.com/in/shubham-sunil-kumar-333547133/" target="_blank" rel="noopener" class="btn btn-outline" title="Connect on LinkedIn">
+                    <span>💼 LinkedIn</span>
+                </a>
+                <a id="userSponsorLink" href="https://github.com/sponsors/theturkishangorashiro-art" target="_blank" rel="noopener" class="btn btn-sponsor" title="Sponsor on GitHub">
+                    <span>💖 Sponsor</span>
+                </a>
+                <button id="cryptoDonateBtn" class="btn btn-crypto" title="Donate via Crypto USDT (BSC BEP20)">
+                    <span>🪙 Crypto USDT</span>
+                </button>
                 <button class="btn btn-terminal js-toggle-terminal">
-                    <span>>_ Terminal Mode</span>
+                    <span>>_ CLI Mode</span>
                 </button>
             </div>
 
@@ -179,6 +188,36 @@
             <div id="modalBody">
                 <!-- Injected via JavaScript -->
             </div>
+        </div>
+    </div>
+
+    <!-- Crypto Donation Modal -->
+    <div id="cryptoModal" class="modal-overlay">
+        <div class="modal-content glass-panel" style="max-width: 520px; text-align: center; padding: 2rem;">
+            <button id="closeCryptoModalBtn" class="modal-close-btn">✕</button>
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">🪙</div>
+            <h3 style="font-size: 1.5rem; color: #fff; margin-bottom: 0.25rem;">Support via Crypto</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Thank you for supporting my open-source projects!</p>
+            
+            <div class="glass-panel" style="padding: 1.25rem; margin-bottom: 1.5rem; background: rgba(255,255,255,0.02); text-align: left;">
+                <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--cyan); margin-bottom: 0.3rem; font-family: var(--font-mono);">Accepted Token & Network</div>
+                <div style="font-weight: 700; color: #fff; font-size: 1.05rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="background: rgba(234, 179, 8, 0.2); color: #facc15; padding: 0.2rem 0.6rem; border-radius: var(--radius-full); font-size: 0.8rem; font-family: var(--font-mono);">USDT</span>
+                    <span>Binance Smart Chain (BSC - BEP20)</span>
+                </div>
+                
+                <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--cyan); margin-bottom: 0.4rem; font-family: var(--font-mono);">Deposit Address</div>
+                <div style="display: flex; align-items: center; gap: 0.5rem; background: rgba(0,0,0,0.5); border: 1px dashed var(--glass-border); padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 0.82rem; word-break: break-all; color: #4ade80;">
+                    <span id="cryptoAddressText" style="flex: 1;">0x512f80a85f23a30742675f2d14b2a7b285499131</span>
+                    <button id="copyCryptoBtn" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; flex-shrink: 0;" title="Copy to clipboard">
+                        <span>📋 Copy</span>
+                    </button>
+                </div>
+            </div>
+            
+            <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">
+                ⚠️ <em>Please make sure to send only <strong>USDT over BSC (BEP20)</strong> network to avoid loss of funds.</em>
+            </p>
         </div>
     </div>
 

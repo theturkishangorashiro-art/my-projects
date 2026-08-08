@@ -228,6 +228,32 @@ body {
     border-color: var(--cyan);
 }
 
+.btn-sponsor {
+    background: linear-gradient(135deg, #ec4899, #f43f5e);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(236, 72, 153, 0.3);
+}
+
+.btn-sponsor:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(236, 72, 153, 0.5);
+}
+
+.btn-crypto {
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.2), rgba(16, 185, 129, 0.2));
+    border: 1px solid rgba(234, 179, 8, 0.4);
+    color: #facc15;
+    box-shadow: 0 4px 15px rgba(234, 179, 8, 0.15);
+}
+
+.btn-crypto:hover {
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.35), rgba(16, 185, 129, 0.35));
+    border-color: #facc15;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(234, 179, 8, 0.3);
+}
+
 /* Hero Section */
 .hero-section {
     position: relative;

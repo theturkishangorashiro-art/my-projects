@@ -74,10 +74,47 @@ class PortfolioApp {
             if (e.target.id === 'projectModal') this.toggleModal(false);
         });
 
+        // Crypto Donation Modal Logic
+        const cryptoModal = document.getElementById('cryptoModal');
+        const cryptoDonateBtn = document.getElementById('cryptoDonateBtn');
+        const closeCryptoModalBtn = document.getElementById('closeCryptoModalBtn');
+        const copyCryptoBtn = document.getElementById('copyCryptoBtn');
+
+        cryptoDonateBtn?.addEventListener('click', () => {
+            cryptoModal?.classList.add('active');
+        });
+
+        closeCryptoModalBtn?.addEventListener('click', () => {
+            cryptoModal?.classList.remove('active');
+        });
+
+        cryptoModal?.addEventListener('click', (e) => {
+            if (e.target.id === 'cryptoModal') cryptoModal.classList.remove('active');
+        });
+
+        copyCryptoBtn?.addEventListener('click', () => {
+            const address = document.getElementById('cryptoAddressText')?.textContent || window.PORTFOLIO_CONFIG.profile.cryptoUsdtAddress;
+            navigator.clipboard.writeText(address).then(() => {
+                const span = copyCryptoBtn.querySelector('span');
+                if (span) {
+                    const originalText = span.textContent;
+                    span.textContent = '✅ Copied!';
+                    copyCryptoBtn.style.borderColor = '#4ade80';
+                    setTimeout(() => {
+                        span.textContent = originalText;
+                        copyCryptoBtn.style.borderColor = '';
+                    }, 2000);
+                }
+            }).catch(err => {
+                console.error("Clipboard copy failed", err);
+            });
+        });
+
         // ESC key to close modals
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 this.toggleModal(false);
+                cryptoModal?.classList.remove('active');
                 if (window.portfolioTerminal) window.portfolioTerminal.toggleModal(false);
             }
         });
@@ -137,9 +174,10 @@ class PortfolioApp {
         if (avatarEl) avatarEl.src = profile.avatar_url || window.PORTFOLIO_CONFIG.profile.avatarFallback;
         if (nameEl) nameEl.textContent = profile.name || profile.login;
         if (handleEl) handleEl.textContent = `@${profile.login}`;
-        if (bioEl) bioEl.textContent = profile.bio || window.PORTFOLIO_CONFIG.profile.bio;
-        if (locationEl) locationEl.textContent = profile.location || "Global / Remote";
-        if (ghLinkEl) ghLinkEl.href = profile.html_url || `https://github.com/${profile.login}`;
+        if (bioEl) bioEl.textContent = window.PORTFOLIO_CONFIG.profile.bio || profile.bio;
+        if (ghLinkEl) ghLinkEl.href = window.PORTFOLIO_CONFIG.profile.github || profile.html_url || `https://github.com/${profile.login}`;
+        const linkedinLinkEl = document.getElementById('userLinkedinLink');
+        if (linkedinLinkEl && window.PORTFOLIO_CONFIG.profile.linkedin) linkedinLinkEl.href = window.PORTFOLIO_CONFIG.profile.linkedin;
 
         // Sync input field value
         const userInput = document.getElementById('usernameInput');

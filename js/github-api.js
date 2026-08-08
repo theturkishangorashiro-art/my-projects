@@ -8,6 +8,17 @@ class GitHubService {
     constructor() {
         this.cacheKeyPrefix = "gh_portfolio_cache_";
         this.cacheTTL = 15 * 60 * 1000; // 15 minutes cache
+        this.clearCache();
+    }
+
+    clearCache() {
+        try {
+            Object.keys(localStorage).forEach(key => {
+                if (key.startsWith(this.cacheKeyPrefix)) {
+                    localStorage.removeItem(key);
+                }
+            });
+        } catch (e) {}
     }
 
     /**
@@ -16,7 +27,12 @@ class GitHubService {
     async getUserProfile(username) {
         const cacheKey = `${this.cacheKeyPrefix}user_${username}`;
         const cached = this.getFromCache(cacheKey);
-        if (cached) return cached;
+        if (cached) {
+            if (window.PORTFOLIO_CONFIG && window.PORTFOLIO_CONFIG.profile.bio) {
+                cached.bio = window.PORTFOLIO_CONFIG.profile.bio;
+            }
+            return cached;
+        }
 
         try {
             const response = await fetch(`https://api.github.com/users/${encodeURIComponent(username)}`);
@@ -24,6 +40,9 @@ class GitHubService {
                 throw new Error(`GitHub API HTTP ${response.status}`);
             }
             const data = await response.json();
+            if (window.PORTFOLIO_CONFIG && window.PORTFOLIO_CONFIG.profile.bio) {
+                data.bio = window.PORTFOLIO_CONFIG.profile.bio;
+            }
             this.setCache(cacheKey, data);
             return data;
         } catch (error) {
@@ -49,7 +68,21 @@ class GitHubService {
     async getUserRepos(username) {
         const cacheKey = `${this.cacheKeyPrefix}repos_${username}`;
         const cached = this.getFromCache(cacheKey);
-        if (cached) return cached;
+        
+        const featuredConfig = window.PORTFOLIO_CONFIG.featuredProjects || [];
+
+        if (cached) {
+            // Ensure featured projects are present in cached list
+            const mergedMap = new Map();
+            featuredConfig.forEach(p => mergedMap.set(p.name.toLowerCase(), p));
+            cached.forEach(repo => {
+                const key = repo.name.toLowerCase();
+                if (!mergedMap.has(key)) {
+                    mergedMap.set(key, repo);
+                }
+            });
+            return Array.from(mergedMap.values());
+        }
 
         try {
             const response = await fetch(
@@ -80,8 +113,17 @@ class GitHubService {
                     featured: repo.stargazers_count > 5 || repo.topics?.includes("featured")
                 }));
 
-            // Combine with featured configuration fallback if list is small or fallback requested
-            const finalRepos = formattedRepos.length > 0 ? formattedRepos : window.PORTFOLIO_CONFIG.featuredProjects;
+            // Merge featured config projects into API results
+            const mergedMap = new Map();
+            featuredConfig.forEach(p => mergedMap.set(p.name.toLowerCase(), p));
+            formattedRepos.forEach(repo => {
+                const key = repo.name.toLowerCase();
+                if (!mergedMap.has(key)) {
+                    mergedMap.set(key, repo);
+                }
+            });
+
+            const finalRepos = Array.from(mergedMap.values());
 
             this.setCache(cacheKey, finalRepos);
             return finalRepos;
